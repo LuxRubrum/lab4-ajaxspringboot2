@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Работа с Блокнотом - Лабораторная работа №4 - WEB программирование</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/CSS/style.css">
+        <script src="/js/jquery-3.7.1.js" ></script>
+        <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://snipp.ru/cdn/maskedinput/jquery.maskedinput.min.js"></script>
+
+    
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
+
+    </head>
+    <body>
+        <div>
+            <div class="center marg">
+            <a href="insert.html" class = "marg button-39">Новая запись</a>
+            <button id="btnsort" class = "marg button-39">Сортировать по дате</button>
+            <button id="btn1" class = "marg button-39">Найти по названию</button>
+            <input id="text" class = "marg input-39" type="text" > <!--name="form-text">-->
+            </div>
+            <div class="center">
+            <table id="data1" class="table"></table>    
+            </div>
+        </div>
+
+
+        <script type="text/javascript"> 
+            function f(data) {
+                var tbl_body = "<tr><th></th><th></th><th>#</th><th>Название</th><th>Автор</th><th>Дата</th><th>Время</th><th>Содержание</th></tr>";
+                var odd_even = false;
+                $.each(data, function() {
+                    var tbl_row = "";
+                    var i=0;
+                    $.each(this, function(k , v) {
+                        if (i===0){
+                            tbl_row += "<td><button class = 'button-39'>Удалить</button> </td>";
+                            tbl_row += "<td><button class='btnU button-39'>Изменить</button><button class='btnS button-39' hidden>Сохранить</button><button class='btnC button-39' hidden>Отменить</button> </td>";
+                            tbl_row += "<td>"+v+"</td>";
+                        }
+                        else{
+                            tbl_row += "<td>"+v+"</td>";
+                        }
+                        i++;
+                    });
+                    tbl_body += "<tr class=\""+( odd_even ? "odd" : "even")+"\">"+tbl_row+"</tr>";
+                    odd_even = !odd_even;
+                });
+                $("#data1").html(tbl_body);   
+            }
+            $(document).ready(function () {
+
+                var url='/api2/getdata';              
+                $.getJSON(url , function(data) {
+                    //alert(data);
+                    f(data);
+                });
+                
+                
+                $("#btn1").click(function(){ 
+                    var url2='/api2/find?name='+$('#text').val();
+                    //alert(url2);
+                    $.getJSON(url2 , function(data) {                            
+                        //alert(data);
+                        f(data);
+                    });
+                    
+                });
+                                                
+                $("#data1").on("click", function (e) {
+                    
+                    var iRow = $(e.target).closest('tr').index();                
+                    var iCol = $(e.target).closest('td').index();                    
+                    var ibtn =$(e.target).closest('button').index();
+                    
+                    if (iCol===1){                        
+                        var txt1=$(".txt1").val();
+                        var txt2=$(".txt2").val();
+                        var txt3=$(".txt3").val();
+                        var txt4=$(".txt4").val();
+                        var txt5=$(".txt5").val();
+                        var parent1=$('.txt1').parents().eq(0);
+                        var parent2=$('.txt2').parents().eq(0);
+                        var parent3=$('.txt3').parents().eq(0);
+                        var parent4=$('.txt4').parents().eq(0);
+                        var parent5=$('.txt5').parents().eq(0);
+                        parent1.html(txt1);
+                        parent2.html(txt2);
+                        parent3.html(txt3);
+                        parent4.html(txt4);
+                        parent5.html(txt5);
+                        $(".txt1").remove();
+                        $(".txt2").remove();
+                        $(".txt3").remove();
+                        $(".txt4").remove();
+                        $(".txt5").remove();
+                        
+                        if (ibtn===0){
+                            var col=3;
+                            var array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
+                            var data = array.first();  
+                            data.html("<input class='txt1 input-39' id='text' type='text' value='"+data.text()+"'>");
+
+                            col=4;
+                            array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
+                            data = array.first(); 
+                            data.html("<input class='txt2 input-39' id='text' type='text' value='"+data.text()+"'>");
+
+                            //col=5;
+                            //array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
+                            //data = array.first(); 
+                            //data.html("<input class='txt3 input-39 mask-date form-control' id='text' type='text' value='"+data.text()+"'>");
+
+                            //col=6;
+                            //array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
+                            //data = array.first(); 
+                            //data.html("<input class='txt4 input-39 mask-time form-control' id='text' type='text' value='"+data.text()+"'>");
+
+                            col=7;
+                            array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
+                            data = array.first(); 
+                            data.html("<input class='txt5 input-39' id='text' type='text' value='"+data.text()+"'>");
+                        
+                            $(".btnU").show();
+                            $(".btnS").hide();
+                            $(".btnC").hide();
+
+                            
+                        }
+                        if (ibtn===1){
+                            var col=2;
+                            var array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
+                            var data = array.first();                   
+                            alert(data.text() + ' ' + txt1 + ' ' + txt2 + ' ' + txt3 + ' ' + txt4 + ' ' + txt5);
+                            $.post('/api2/update', {id: data.text(), fname: txt1, user: txt2, date: txt3, time: txt4, content: txt5}, function(data){                        
+                                f(data);
+                                $(".btnU").show();
+                                $(".btnS").hide();
+                                $(".btnC").hide();
+                            });        
+                        }
+                        if (ibtn===2){
+                            $.getJSON(url , function(data) {
+                            //alert(data);
+                            f(data);
+                            });
+                        }
+                        col = 1;
+                        array = $('#data1 tr:eq('+iRow+') td:eq('+col+') :button');
+                        var btns = array;
+                       
+                        for (var i = 0;i < btns.length; i++){                            
+                            btns.eq(i).toggle();
+                        }
+                        
+                    }
+                    if (iCol===0){
+                        
+                        var col = 2;
+                        var array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
+                        var data = array.first();                   
+                   
+                        $.post('/api2/delete', {id: data.text()}, function(data){                        
+                            f(data);
+                        });                        
+                    }
+                    
+                });
+
+                $.mask.definitions['H'] = "[0-2]";
+                $.mask.definitions['h'] = "[0-9]";
+                $.mask.definitions['M'] = "[0-5]";
+                $.mask.definitions['m'] = "[0-9]";
+                $(".mask-time").mask("Hh:Mm", {
+                    completed: function() {
+                        var currentMask = $(this).mask();
+                        if (isNaN(parseInt(currentMask))) {
+                            $(this).val("");
+                        } else if (parseInt(currentMask) > 2359) {
+                            $(this).val("23:59");
+                        };
+                    }
+                });
+                $.mask.definitions['D'] = "[0-3]";
+                $.mask.definitions['d'] = "[0-9]";
+                $.mask.definitions['L'] = "[0-1]";
+                $.mask.definitions['l'] = "[0-9]";
+                $.mask.definitions['y'] = "[0-9]";
+                $(".mask-date").mask("Dd.Ll.yyyy", {
+                    completed: function() {
+                        var currentMask = $(this).mask();
+                        if (isNaN(parseInt(currentMask))) {
+                            $(this).val("");
+                        } else {
+                            if (currentMask.substring(0, 2) > "31") {
+                                $(this).val(currentMask.replace(currentMask.slice(0,2), "01.").replace(currentMask.substring(4), "." + currentMask.substring(4)));
+                                //$(this).val("01." + currentMask.substring(2, 4) + "." + currentMask.substring(4));
+                                
+                                if (currentMask.substring(2, 4) > "12") {
+                                $(this).val(currentMask.replace(currentMask.slice(0,4), "01.01."));
+                                //$(this).val(currentMask.substring(0, 2) + ".01." + currentMask.substring(4));
+                            }
+                                
+                            } else if (currentMask.substring(2, 4) > "12") {
+                                $(this).val(currentMask.replace(currentMask.slice(2,4), ".01."));
+                                //$(this).val(currentMask.substring(0, 2) + ".01." + currentMask.substring(4));
+                            }
+                        };
+                    }
+                });
+
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Работа с Блокнотом - Лабораторная работа №4 - WEB программирование</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="/CSS/style.css">
+        <script src="/js/jquery-3.7.1.js" ></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://snipp.ru/cdn/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://snipp.ru/cdn/maskedinput/jquery.maskedinput.min.js"></script>
+    </head>
+    <body> 
+            <div class="center marg">
+                <label class="marg label-39">Название</label>
+                <input type="text" class="input-39" id="fname" >
+             </div>
+            <div class="center marg">
+                <label class="marg label-39">Автор</label>
+                <input type="text" class="input-39" id="user" >
+             </div> 
+             <div class="center marg">
+                <label class="marg label-39">Дата</label>
+                <input type="text" class="mask-date form-control input-39" id="date" >
+             </div>
+             <div class="center marg">
+                <label class="marg label-39">Время</label>
+                <input type="text" class="mask-time form-control input-39" id="time" >
+             </div>
+             <div class="center marg">
+                <label class="marg label-39">Содержание</label>
+                <input type="text" class="input-39" id="content" >
+             </div>
+             <div class="center marg">
+                <button id="btn1" class = "button-39">Добавить</button> 
+             </div>
+
+         
+         <script>
+            $(document).ready(function () {
+
+                $.mask.definitions['H'] = "[0-2]";
+                $.mask.definitions['h'] = "[0-9]";
+                $.mask.definitions['M'] = "[0-5]";
+                $.mask.definitions['m'] = "[0-9]";
+                $(".mask-time").mask("Hh:Mm", {
+                    completed: function() {
+                        var currentMask = $(this).mask();
+                        if (isNaN(parseInt(currentMask))) {
+                            $(this).val("");
+                        } else if (parseInt(currentMask) > 2359) {
+                            $(this).val("23:59");
+                        };
+                    }
+                });
+                $.mask.definitions['D'] = "[0-3]";
+                $.mask.definitions['d'] = "[0-9]";
+                $.mask.definitions['L'] = "[0-1]";
+                $.mask.definitions['l'] = "[0-9]";
+                $.mask.definitions['y'] = "[0-9]";
+                $(".mask-date").mask("Dd.Ll.yyyy", {
+                    completed: function() {
+                        var currentMask = $(this).mask();
+                        if (isNaN(parseInt(currentMask))) {
+                            $(this).val("");
+                        } else {
+                            if (currentMask.substring(0, 2) > "31") {
+                                $(this).val(currentMask.replace(currentMask.slice(0,2), "01.").replace(currentMask.substring(4), "." + currentMask.substring(4)));
+                                //$(this).val("01." + currentMask.substring(2, 4) + "." + currentMask.substring(4));
+
+                                if (currentMask.substring(2, 4) > "12") {
+                                $(this).val(currentMask.replace(currentMask.slice(0,4), "01.01."));
+                                //$(this).val(currentMask.substring(0, 2) + ".01." + currentMask.substring(4));
+                            }
+                                
+                            } else if (currentMask.substring(2, 4) > "12") {
+                                $(this).val(currentMask.replace(currentMask.slice(2,4), ".01."));
+                                //$(this).val(currentMask.substring(0, 2) + ".01." + currentMask.substring(4));
+                            }
+                        };
+                    }
+                });
+
+                $("#date").datepicker({
+                showOn: "button",
+                buttonImage: "https://snipp.ru/demo/437/calendar.gif",
+                buttonImageOnly: true,
+                buttonText: "Выбрать дату"
+                });
+
+                $.datepicker.regional['ru'] = {
+                closeText: 'Закрыть',
+                prevText: 'Предыдущий',
+                nextText: 'Следующий',
+                currentText: 'Сегодня',
+                monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+                monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
+                dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
+                dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
+                dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+                weekHeader: 'Не',
+                dateFormat: 'dd.mm.yy',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+                };
+                $.datepicker.setDefaults($.datepicker.regional['ru']);
+
+                $('#btn1').click(function(e){
+                    e.stopPropagation();
+                    $.ajax({
+                        url: '/api2/insert',
+                        method: 'post',
+                        //dataType: 'html',
+                        data: {'fname': $('#fname').val(), 'user': $('#user').val(), 'date': $('#date').val(), 'time': $('#time').val(), 'content': $('#content').val()},
+                        success: function(data){
+                            //alert(data);
+                            window.location.href = "index.html";
+                        },
+                        error: function (jqXHR, exception) {
+                            alert('Error. ' + jqXHR.responseText);
+                            window.location.href = "index.html";
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
