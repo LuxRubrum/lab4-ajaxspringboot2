@@ -58,7 +58,6 @@
                     f(data);
                 });
                 
-                
                 $("#btn1").click(function(){ 
                     var url2='/api2/find?name='+$('#text').val();
                     //alert(url2);
@@ -66,7 +65,15 @@
                         //alert(data);
                         f(data);
                     });
-                    
+                });
+
+                $("#btnsort").click(function(){ 
+                    var url3='/api2/sort';
+                    //alert(url3);
+                    $.getJSON(url3 , function(data) {                            
+                        //alert(data);
+                        f(data);
+                    });
                 });
                                                 
                 $("#data1").on("click", function (e) {
@@ -108,15 +115,15 @@
                             data = array.first(); 
                             data.html("<input class='txt2 input-39' id='text' type='text' value='"+data.text()+"'>");
 
-                            //col=5;
-                            //array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
-                            //data = array.first(); 
-                            //data.html("<input class='txt3 input-39 mask-date form-control' id='text' type='text' value='"+data.text()+"'>");
+                            col=5;
+                            array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
+                            data = array.first(); 
+                            data.html("<input class='txt3 input-39 mask-date form-control' id='text' type='text' value='"+data.text()+"'>");
 
-                            //col=6;
-                            //array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
-                            //data = array.first(); 
-                            //data.html("<input class='txt4 input-39 mask-time form-control' id='text' type='text' value='"+data.text()+"'>");
+                            col=6;
+                            array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
+                            data = array.first(); 
+                            data.html("<input class='txt4 input-39 mask-time form-control' id='text' type='text' value='"+data.text()+"'>");
 
                             col=7;
                             array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
@@ -133,7 +140,7 @@
                             var col=2;
                             var array = $('#data1 tr:eq('+iRow+') td:eq('+col+')');
                             var data = array.first();                   
-                            alert(data.text() + ' ' + txt1 + ' ' + txt2 + ' ' + txt3 + ' ' + txt4 + ' ' + txt5);
+                            //alert(data.text() + ' ' + txt1 + ' ' + txt2 + ' ' + txt3 + '  ' + txt4 + ' ' + txt5);
                             $.post('/api2/update', {id: data.text(), fname: txt1, user: txt2, date: txt3, time: txt4, content: txt5}, function(data){                        
                                 f(data);
                                 $(".btnU").show();

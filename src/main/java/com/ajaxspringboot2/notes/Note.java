@@ -36,6 +36,23 @@ public class Note {
         return date;
     }
 
+    public int getIntDate() {
+        int intdate = 0;
+        String[] vals = date.split(".");
+        int i = 0;
+        for(String val : vals){
+            int intval = Integer.valueOf(val);
+            if(i!=0){
+                for (int j = 0; j < i; j++) {
+                    intval = intval * 100;
+                }
+            }
+            intdate += intval;
+            i++;
+        }
+        return intdate;
+    }
+
     public void setDate(String Date) {
         this.date = Date;
     }

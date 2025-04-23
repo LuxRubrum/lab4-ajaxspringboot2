@@ -1,6 +1,7 @@
 package com.ajaxspringboot2.notes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,7 +33,13 @@ public class NoteList {
     }   
 
     public List<Note> getStTitlesFromDB(){
-        notes = (List<Note>)session.getAttribute("notes");        
+        notes = (List<Note>)session.getAttribute("notes");
+        return notes;
+    }   
+
+    public List<Note> getSortedListFromDB(){
+        notes = (List<Note>)session.getAttribute("notes");
+        Collections.sort(notes, new NoteComparator());            
         return notes;
     }   
 
@@ -93,7 +100,7 @@ public class NoteList {
         }
         session.setAttribute("notes", notes);
         return notes;
-    }   
+    }  
 
 }
 

@@ -32,6 +32,7 @@ public class NoteController {
 
     }
     
+    
     @RequestMapping(method = RequestMethod.GET, value = "find")
     public ResponseEntity<List<Note>> getfind (HttpSession session, @RequestParam(value = "name", defaultValue = "") String name) {
         NoteList states = new NoteList(session);
@@ -42,6 +43,17 @@ public class NoteController {
         else{
             stList = states.getStTitlesFromDB(name);
         }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("contentType", "application/json");
+
+        return new ResponseEntity<>(stList, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "sort")
+    public ResponseEntity<List<Note>> getsort (HttpSession session) {
+        NoteList states = new NoteList(session);
+        List<Note> stList;//=null;
+        stList = states.getSortedListFromDB();
         HttpHeaders headers = new HttpHeaders();
         headers.add("contentType", "application/json");
 
