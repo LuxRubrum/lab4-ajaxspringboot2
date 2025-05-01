@@ -1,5 +1,7 @@
 package com.ajaxspringboot2.notes;
 
+import java.util.StringTokenizer;
+
 public class Note {
     private int id;    
     private String name;
@@ -37,20 +39,25 @@ public class Note {
     }
 
     public int getIntDate() {
-        int intdate = 0;
-        String[] vals = date.split(".");
-        int i = 0;
-        for(String val : vals){
-            int intval = Integer.valueOf(val);
-            if(i!=0){
-                for (int j = 0; j < i; j++) {
-                    intval = intval * 100;
-                }
-            }
-            intdate += intval;
+        if (date == null) { return 0;}
+        else {
+            try{
+        String tempdate = date.replace(".", " ");
+        Integer intdate = 0;
+        StringTokenizer st = new StringTokenizer(tempdate);
+        Integer i = 0;
+        while (st.hasMoreTokens()) {
+            String x = st.nextToken();
+            Double mult = Math.pow(100, i.doubleValue());
+            intdate += Integer.valueOf(x) * mult.intValue();
             i++;
         }
         return intdate;
+    }
+    catch (Exception ex) {
+        return 0;
+    }
+    }
     }
 
     public void setDate(String Date) {

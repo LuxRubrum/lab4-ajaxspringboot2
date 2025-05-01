@@ -13,6 +13,8 @@ public class NoteList {
     public NoteList(HttpSession session) {
         this.session = session;    
     }
+
+
     public NoteList(HttpSession session, int k) {
         this.session = session;    
         notes = (List<Note>)session.getAttribute("notes"); 
@@ -32,16 +34,20 @@ public class NoteList {
         }      
     }   
 
+
     public List<Note> getStTitlesFromDB(){
         notes = (List<Note>)session.getAttribute("notes");
         return notes;
     }   
 
+
     public List<Note> getSortedListFromDB(){
         notes = (List<Note>)session.getAttribute("notes");
+
         Collections.sort(notes, new NoteComparator());            
         return notes;
     }   
+
 
     public List<Note> getStTitlesFromDB(String name){
         notes = (List<Note>)session.getAttribute("notes");
@@ -53,6 +59,7 @@ public class NoteList {
         }
         return listnotes;
     }
+
 
     public int insertDB(String fname, String user, String date, String time, String content){
         notes = (List<Note>)session.getAttribute("notes"); 
@@ -75,6 +82,8 @@ public class NoteList {
         session.setAttribute("notes", notes);
         return max;
     }
+
+
     public List<Note> getDeleteFromDB(int id){
         notes = (List<Note>)session.getAttribute("notes");        
         for(int i = 0; i < notes.size(); i++){
@@ -86,6 +95,8 @@ public class NoteList {
         session.setAttribute("notes", notes);
         return notes;
     }   
+
+
     public List<Note> getUpdateFromDB(int id, String fname, String user, String date, String time, String content){
         notes = (List<Note>)session.getAttribute("notes");        
         for(int i = 0; i < notes.size(); i++){

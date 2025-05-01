@@ -62,8 +62,8 @@ public class NoteController {
 
     @RequestMapping(method = RequestMethod.POST,value = "insert")
     public ResponseEntity<Note> insertDB (HttpSession session, @RequestParam(value = "fname", defaultValue = "") String fname,  
-    @RequestParam(value = "user") String user, @RequestParam(value = "date") String date, @RequestParam(value = "time") String time, 
-    @RequestParam(value = "content") String content) {
+    @RequestParam(value = "user", defaultValue = "") String user, @RequestParam(value = "date", defaultValue = "01.01.2000") String date, 
+    @RequestParam(value = "time", defaultValue = "00:00") String time, @RequestParam(value = "content", defaultValue = "") String content) {
                    
         NoteList notes = new NoteList(session);
         Note n = new Note(); 
